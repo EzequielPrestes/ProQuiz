@@ -17,9 +17,9 @@ class DatabaseService:
             self.db = mysql.connector.connect(**self.db_config)
             # Usar buffered=True para evitar el error "Unread result found"
             self.cursor = self.db.cursor(buffered=True)
-            print("✅ Conectado a la base de datos")
+            print("Conectado a la base de datos")
         except mysql.connector.Error as err:
-            print(f"❌ Error de Conexión a la Base de Datos: {err}")
+            print(f"Error de Conexión a la Base de Datos: {err}")
             raise
 
     def _ejecutar_consulta(self, query, params=None):
@@ -150,6 +150,38 @@ class DatabaseService:
         except mysql.connector.Error as err:
             print(f"Error al eliminar pregunta: {err}")
             return False
+        
+    def actualizar_pregunta(self, pregunta_id, pregunta, respuesta_correcta, op1, op2, op3, categoria, dificultad, juego_id):
+        """Actualiza la información de una pregunta existente."""
+        try:
+            query = """
+                UPDATE preguntas 
+                SET pregunta = %s, respuesta_correcta = %s, opcion_incorrecta_1 = %s, 
+                    opcion_incorrecta_2 = %s, opcion_incorrecta_3 = %s, categoria = %s, 
+                    dificultad = %s, juego_id = %s
+                WHERE id = %s
+            """
+            params = (pregunta, respuesta_correcta, op1, op2, op3, categoria, dificultad, juego_id, pregunta_id)
+            return self._ejecutar_consulta(query, params)
+        except mysql.connector.Error as err:
+            print(f"Error al actualizar pregunta: {err}")
+            return False
+            
+    def obtener_pregunta_por_id(self, pregunta_id):
+        """Obtiene una pregunta por su ID para su modificación."""
+        try:
+            # Selecciona todos los campos necesarios para la modificación
+            resultado = self._ejecutar_consulta(
+                "SELECT id, pregunta, respuesta_correcta, opcion_incorrecta_1, opcion_incorrecta_2, opcion_incorrecta_3, categoria, dificultad, juego_id FROM preguntas WHERE id = %s", 
+                (pregunta_id,)
+            )
+            if resultado:
+                # Retorna un diccionario o tupla con los datos
+                return resultado[0]
+            return None
+        except mysql.connector.Error as err:
+            print(f"Error al obtener pregunta: {err}")
+            return None    
     
     def crear_pregunta(self, pregunta, respuesta_correcta, op1, op2, op3, categoria, dificultad, juego_id):
         try:
@@ -177,4 +209,4 @@ class DatabaseService:
             if self.cursor:
                 self.cursor.close()
             self.db.close()
-            print("🔌 Conexión a la base de datos cerrada")
+            print("Conexión a la base de datos cerrada")
