@@ -40,7 +40,17 @@ class DatabaseService:
     
     def obtener_juegos(self):
         try:
-            return self._ejecutar_consulta("SELECT titulo, tipo_juego FROM juegos") or []
+            # CORRECCIÓN: Seleccionar el ID del juego (necesario para el modelo)
+            resultados = self._ejecutar_consulta("SELECT id, titulo, tipo_juego FROM juegos") or [] 
+            
+            juegos = []
+            # Mapear los resultados (tuplas) a objetos de la clase Juego
+            for res in resultados:
+                # Los campos son: [id, titulo, tipo_juego]
+                if len(res) >= 3:
+                    juegos.append(Juego(id=res[0], titulo=res[1], tipo_juego=res[2])) 
+            
+            return juegos
         except mysql.connector.Error as err:
             print(f"Error al cargar juegos: {err}")
             return []
@@ -172,7 +182,7 @@ class DatabaseService:
         try:
             # Selecciona todos los campos necesarios para la modificación
             resultado = self._ejecutar_consulta(
-                "SELECT id, pregunta, respuesta_correcta, opcion_incorrecta_1, opcion_incorrecta_2, opcion_incorrecta_3, categoria, dificultad, juego_id FROM preguntas WHERE id = %s", 
+                "SELECT id, pregunta, respuesta_correcta, opcion_incorrecta_1, opcion_incorrecta_2, opcion_incorrecta_3, juego_id FROM preguntas WHERE id = %s", 
                 (pregunta_id,)
             )
             if resultado:
