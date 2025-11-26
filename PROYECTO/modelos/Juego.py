@@ -1,5 +1,5 @@
 
-# modelos/Juego.py
+# modelos/Juego
 
 class Juego:
     def __init__(self, id, titulo, tipo_juego):

@@ -8,9 +8,13 @@ import random
 
 
 # Importar servicios y modelos
+from servicios.Bdatos import DatabaseService
+from modelos.Usuario import Usuario
+from modelos.Pregunta import Pregunta
+from modelos.Juego import Juego
 
 
-# Clase de tema por defecto
+# clase theme de estetica
 try:
     from servicios.Estetica import Theme 
 except ImportError:
@@ -23,13 +27,7 @@ except ImportError:
         ERROR = "#f44336"
 
 
-from servicios.Bdatos import DatabaseService
-from modelos.Usuario import Usuario
-from modelos.Pregunta import Pregunta
-from modelos.Juego import Juego
-
-
-# Manejo de Imágenes (PIL)
+# para carga de Imágenes (PIL)
 try:
     from PIL import Image, ImageTk
 except ImportError:
@@ -59,31 +57,31 @@ except Exception as e:
     sys.exit(1)
 
 
-def hashear_password(password):
-    """Devuelve el hash SHA256 de la contraseña."""
+def hashear_password(password): 
+    # Devuelve el hash SHA256 de la contraseña
     return hashlib.sha256(password.encode()).hexdigest()
 
 
 # Funciones de Base de Datos
 
 
-def obtener_juegos():
-    """Carga todos los juegos disponibles."""
+def obtener_juegos(): 
+    #Carga todos los juegos disponibles
     return db_service.obtener_juegos()
 
 
 def registrar_usuario_db(nombre, email, password):
-    """Registra un nuevo usuario."""
+    # Registra un nuevo usuario
     return db_service.registrar_usuario(nombre, email, password)
 
 
 def verificar_login_db(email, password):
-    """Verifica credenciales."""
+    # Verifica credenciales
     return db_service.verificar_login(email, password)
 
 
 def cargar_preguntas(juego_titulo):
-    """Carga las preguntas para un juego específico."""
+    # Carga las preguntas para un juego específico
     resultados = db_service.cargar_preguntas(juego_titulo)
     
     preguntas = []
@@ -99,53 +97,53 @@ def cargar_preguntas(juego_titulo):
 
 
 def guardar_puntaje(usuario_id, puntaje):
-    """Registra el puntaje en la DB."""
+    # Registra el puntaje en la DB
     db_service.guardar_puntaje(usuario_id, puntaje)
 
 
 def cargar_mejores_puntajes():
-    """Carga los 5 mejores puntajes."""
+    # Carga los 5 mejores puntajes
     return db_service.cargar_mejores_puntajes()
 
 
-# Funciones de Administrador
+# Funciones del Administrador
 
 
 def obtener_todos_usuarios():
-    """Obtiene todos los usuarios registrados."""
+    # Obtiene todos los usuarios registrados
     return db_service.obtener_todos_usuarios()
 
 
 def eliminar_usuario_db(usuario_id):
-    """Elimina un usuario."""
+    # Elimina un usuario
     return db_service.eliminar_usuario(usuario_id)
 
 
 def obtener_todas_preguntas():
-    """Obtiene todas las preguntas."""
+    # Obtiene todas las preguntas
     return db_service.obtener_todas_preguntas()
 
 
 def eliminar_pregunta_db(pregunta_id):
-    """Elimina una pregunta."""
+    # Elimina una pregunta
     return db_service.eliminar_pregunta(pregunta_id)
 
 
 def crear_pregunta_db(pregunta, respuesta_correcta, op1, op2, op3, categoria, dificultad, juego_id):
-    """Crea una nueva pregunta."""
+    # Crea una nueva pregunta
     return db_service.crear_pregunta(pregunta, respuesta_correcta, op1, op2, op3, categoria, dificultad, juego_id)
 
 
 def obtener_juegos_combo():
-    """Obtiene juegos para combobox."""
+    # Obtiene juegos para combobox
     return db_service.obtener_juegos_combo()
 
 
-# Aplicación Principal Tkinter
+# Aplicación Principal
 
 
 class ProQuizzApp:
-    """Clase principal de la aplicación ProQuizz."""
+    # Clase principal de la aplicación ProQuizz
     
     
     def __init__(self, root):
@@ -188,19 +186,19 @@ class ProQuizzApp:
                 print(f"ERROR: No se pudo cargar o procesar la imagen: {e}")
                 self.background_canvas = None
 
-        # Contenedor principal de vistas
+        # vistas principales
         self.current_frame = None 
         self.current_frame_window_id = None 
         self.mostrar_login_registro()
 
 
-    def _on_resize(self, event):
-        """Maneja el redimensionamiento para centrar el frame de contenido y el fondo."""
+    def _on_resize(self, event): # (tamaño de ventana)
+        # centra el frame de contenido y el fondo
         if self.background_canvas:
             # Re-centrar la imagen de fondo
             self.background_canvas.coords(1, self.background_canvas.winfo_width() // 2, self.background_canvas.winfo_height() // 2)
             
-            # Re-centrar el frame de contenido actual
+            # Recentrar el frame de contenido actual
             if self.current_frame and self.current_frame_window_id:
                 center_x = self.background_canvas.winfo_width() // 2
                 center_y = self.background_canvas.winfo_height() // 2
@@ -208,7 +206,7 @@ class ProQuizzApp:
 
 
     def limpiar_frame(self):
-        """Destruye el frame actual para cambiar de vista."""
+        # Destruye el frame actual para cambiar de vista
         if self.current_frame:
             if self.background_canvas and self.current_frame_window_id:
                 try:
@@ -220,7 +218,7 @@ class ProQuizzApp:
 
 
     def _get_parent_and_place_method(self):
-        """Devuelve el padre y el método de colocación."""
+        # Devuelve el padre y el método de colocación
         if self.background_canvas:
             parent = self.background_canvas
             
@@ -243,7 +241,7 @@ class ProQuizzApp:
         self.limpiar_frame()
         parent, place_method = self._get_parent_and_place_method()
 
-        # Frame de login
+        # ventanade login
         self.current_frame = Frame(parent, padx=50, pady=50, bg="#ffffff", bd=5, relief="raised") 
         place_method(self.current_frame)
 
@@ -321,7 +319,7 @@ class ProQuizzApp:
         self.limpiar_frame()
         parent, place_method = self._get_parent_and_place_method()
         
-        # Frame del menú
+        # ventana del menu
         self.current_frame = Frame(parent, padx=50, pady=50, bg="#ffffff", bd=5, relief="raised")
         place_method(self.current_frame)
 
@@ -348,14 +346,14 @@ class ProQuizzApp:
         self.limpiar_frame()
         parent, place_method = self._get_parent_and_place_method()
         
-        # Frame de administración
+        # ventana de administración
         self.current_frame = Frame(parent, padx=30, pady=30, bg="#ffffff", bd=5, relief="raised")
         place_method(self.current_frame)
 
         Label(self.current_frame, text="PANEL DE ADMINISTRACIÓN", 
               font=("Arial", 18, "bold"), bg="#ffffff", fg="#004d40").pack(pady=(0, 30))
         
-        # Botones de administración
+        # botones de administración
         Button(self.current_frame, text="Gestionar Usuarios", command=self.gestionar_usuarios,
                font=("Arial", 12, "bold"), bg="#2196f3", fg="white", padx=20, pady=10, width=25).pack(pady=10)
         
@@ -368,7 +366,9 @@ class ProQuizzApp:
         Button(self.current_frame, text="Volver al Menú", command=self.mostrar_menu_principal,
                font=("Arial", 10), bg="#757575", fg="white", padx=10, pady=5).pack(pady=20)
 
-    
+
+     # Funciones de Gestión de Administrador
+
     def gestionar_usuarios(self):
         self.limpiar_frame()
         parent, place_method = self._get_parent_and_place_method()
@@ -452,7 +452,7 @@ class ProQuizzApp:
         Label(self.current_frame, text="GESTIÓN DE PREGUNTAS", 
               font=("Arial", 16, "bold"), bg="#ffffff", fg="#004d40").pack(pady=(0, 20))
         
-        # Treeview de preguntas
+        # ventana para agrega preguntas
         columns = ("ID", "Pregunta", "Respuesta", "Categoría", "Dificultad", "Juego")
         tree = ttk.Treeview(self.current_frame, columns=columns, show="headings", height=10)
         
@@ -467,7 +467,7 @@ class ProQuizzApp:
         
         self.actualizar_lista_preguntas(tree)
         
-        # Botones de control
+        # botones de control
         button_frame = Frame(self.current_frame, bg="#ffffff")
         button_frame.pack(pady=10)
         
@@ -518,7 +518,7 @@ class ProQuizzApp:
 
 
     def crear_nueva_pregunta(self):
-        """Abre un formulario para crear una nueva pregunta."""
+        # Abre un formulario para crear una nueva pregunta (apariencia)
         formulario = Toplevel(self.root)
         formulario.title("Crear Nueva Pregunta")
         formulario.geometry("500x600")
@@ -590,7 +590,7 @@ class ProQuizzApp:
 
     def guardar_nueva_pregunta(self, pregunta_var, respuesta_var, op1_var, op2_var, op3_var,
                               categoria_var, dificultad_var, juego_var, juegos, formulario):
-        """Guarda la nueva pregunta en la base de datos."""
+        #   Guarda la nueva pregunta en la base de datos
         if not pregunta_var.get() or not respuesta_var.get() or not juego_var.get():
             messagebox.showerror("Error", "Pregunta, respuesta correcta y juego son obligatorios.")
             return
@@ -646,7 +646,7 @@ class ProQuizzApp:
 
 
     def iniciar_juego_quiz(self, titulo, tipo):
-        """Prepara y comienza un nuevo juego de quiz."""
+        # comienza un nuevo juego de quiz
         self.juego_actual_titulo = titulo
         self.juego_actual_tipo = tipo
         self.preguntas = cargar_preguntas(titulo)
@@ -665,7 +665,7 @@ class ProQuizzApp:
         self.limpiar_frame()
         parent, place_method = self._get_parent_and_place_method()
         
-        # Frame de juego principal
+        # ventana juego principal
         main_frame = Frame(parent, padx=30, pady=30, bg="#ffffff", bd=5, relief="raised")
         place_method(main_frame)
         self.current_frame = main_frame
@@ -748,7 +748,7 @@ class ProQuizzApp:
 
 
     def verificar(self):
-        """Verifica la respuesta del usuario."""
+        # Verifica la respuesta del usuario."""
         if self.indice >= len(self.preguntas):
             return
             
@@ -775,7 +775,7 @@ class ProQuizzApp:
 
 
     def siguiente_pregunta(self):
-        """Avanza a la siguiente pregunta."""
+        # Avanza a la siguiente pregunta
         if self.indice >= len(self.preguntas):
             if self.boton_siguiente:
                 self.boton_siguiente.config(state='disabled')
@@ -788,7 +788,7 @@ class ProQuizzApp:
 
 
     def mostrar_puntajes(self):
-        """Muestra los mejores puntajes en la interfaz."""
+        # Muestra los mejores puntajes en la interfaz
         mejores = cargar_mejores_puntajes()
         for i, label in enumerate(self.labels_puntajes):
             if i < len(mejores):
@@ -867,7 +867,7 @@ if __name__ == "__main__":
     root.mainloop()
 
 
-    # Limpiar conexiones al salir
+    # cerrar conexion a BD al salir
     
     import mysql.connector
     try:

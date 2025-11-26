@@ -23,7 +23,7 @@ class DatabaseService:
             raise
 
     def _ejecutar_consulta(self, query, params=None):
-        """Ejecuta una consulta y maneja los resultados correctamente."""
+        # Ejecuta una consulta y maneja los resultados correctamente
         try:
             self.cursor.execute(query, params or ())
             # Si es una consulta SELECT, obtener y retornar los resultados
@@ -122,9 +122,9 @@ class DatabaseService:
     
     def eliminar_usuario(self, usuario_id):
         try:
-            # Primero eliminar los puntajes del usuario
+            # elimina los puntajes del usuario
             self._ejecutar_consulta("DELETE FROM puntajes WHERE usuario_id = %s", (usuario_id,))
-            # Luego eliminar el usuario
+            # elimina el usuario
             return self._ejecutar_consulta("DELETE FROM usuarios WHERE id = %s", (usuario_id,))
         except mysql.connector.Error as err:
             print(f"Error al eliminar usuario: {err}")
@@ -168,7 +168,7 @@ class DatabaseService:
             return False
             
     def obtener_pregunta_por_id(self, pregunta_id):
-        """Obtiene una pregunta por su ID para su modificación."""
+        #  Obtiene una pregunta por su ID para su modificación
         try:
             # Selecciona todos los campos necesarios para la modificación
             resultado = self._ejecutar_consulta(
@@ -176,7 +176,7 @@ class DatabaseService:
                 (pregunta_id,)
             )
             if resultado:
-                # Retorna un diccionario o tupla con los datos
+                # Retorna los datos
                 return resultado[0]
             return None
         except mysql.connector.Error as err:
@@ -204,7 +204,7 @@ class DatabaseService:
             return []
 
     def cerrar_db(self):
-        """Cierra la conexión a la base de datos."""
+        #Cierra la conexión a la base de datos
         if self.db and self.db.is_connected():
             if self.cursor:
                 self.cursor.close()

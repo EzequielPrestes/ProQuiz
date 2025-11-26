@@ -1,4 +1,4 @@
-# modelos/Pregunta.py
+# modelos/Pregunta
 
 class Pregunta:
     def __init__(self, id, pregunta, respuesta_correcta, op1, op2, op3, categoria, dificultad, juego_id):

@@ -1,4 +1,4 @@
-# modelos/Usuario.py
+# modelos/Usuario
 
 class Usuario:
     def __init__(self, db_id, nombre, email, rol='usuario', puntaje=0):
