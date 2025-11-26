@@ -83,13 +83,12 @@ def verificar_login_db(email, password):
 
 def cargar_preguntas(juego_titulo):
     # Carga las preguntas para un juego específico
-    resultados = db_service.cargar_preguntas(juego_titulo)
+    resultados = db_service.cargar_preguntas(juego_titulo)#instanciando
     
     preguntas = []
     for res in resultados:
         if len(res) >= 8:
             
-            # --- MANEJO DEFENSIVO DE DATOS ---
             # Asegurar que todos los campos de respuesta son strings válidos.
             respuesta_correcta_str = str(res[2]).strip()
             op1_str = str(res[3]).strip()
@@ -102,14 +101,14 @@ def cargar_preguntas(juego_titulo):
             if not op2_str: op2_str = "Opción B"
             if not op3_str: op3_str = "Opción C"
 
-            # 1. Crear el objeto Pregunta
+            # Crear el objeto Pregunta
             pregunta_obj = Pregunta(
                 id=res[0], pregunta=res[1], respuesta_correcta=respuesta_correcta_str,
                 op1=op1_str, op2=op2_str, op3=op3_str, 
                 categoria=res[6], dificultad=res[7], juego_id=res[8] if len(res) > 8 else None
             )
             
-            # 2. Asegurar que el objeto Pregunta tenga la lista 'opciones_incorrectas'
+            # Asegurar que el objeto Pregunta tenga la lista 'opciones_incorrectas'
             pregunta_obj.opciones_incorrectas = [op1_str, op2_str, op3_str]
             
             preguntas.append(pregunta_obj)
@@ -128,7 +127,6 @@ def cargar_mejores_puntajes():
 
 
 # Funciones del Administrador
-
 
 def obtener_todos_usuarios():
     # Obtiene todos los usuarios registrados
@@ -162,11 +160,9 @@ def obtener_juegos_combo():
 
 # Aplicación Principal
 
-
 class ProQuizzApp:
     # Clase principal de la aplicación ProQuizz
-    
-    
+        
     def __init__(self, root):
         self.root = root
         self.root.title("ProQuizz - Sistema de Quiz")
@@ -328,13 +324,10 @@ class ProQuizzApp:
 
     def iniciar_juego_quiz(self, juego_titulo, juego_tipo):
         self.juego_actual_titulo = juego_titulo
-        
-        # 💡 CORRECCIÓN CLAVE: Normalizar el tipo de juego. 
-        # Si el valor en la DB es "Opcion Multiple", esto devuelve "opcion multiple" (sin acento).
+    
         self.juego_actual_tipo = juego_tipo.strip().lower()
         
-        # 🛑 DEPURACIÓN: Verifica este valor exacto en tu terminal. 
-        # Debe ser 'opcion multiple' o 'abierta'.
+      
         print(f"DEBUG: Tipo de juego normalizado que se está usando: '{self.juego_actual_tipo}'")
         
         self.preguntas = cargar_preguntas(juego_titulo)
@@ -408,8 +401,7 @@ class ProQuizzApp:
     def verificar(self):
         pregunta_actual = self.preguntas[self.indice]
         es_correcta = False
-        
-        # 🚀 CORRECCIÓN: Usar 'opcion multiple' (sin acento) para coincidir con la DB
+
         if self.juego_actual_tipo == 'opcion multiple':
             respuesta_usuario = self.opcion_seleccionada.get().strip()
             
@@ -485,10 +477,9 @@ class ProQuizzApp:
                 self.entry_respuesta.pack(pady=10)
                 self.entry_respuesta.config(state='normal')
                 
-            # 🚀 CORRECCIÓN: Usar 'opcion multiple' (sin acento) para coincidir con la DB
             elif self.juego_actual_tipo == 'opcion multiple':
                 
-                # --- Lógica para Opción Múltiple ---
+                # Lógica para Opción Múltiple
                 print("DEBUG: Entrando a bloque de Opción Múltiple. Generando opciones...") 
                 
                 # Mezclar opciones 
@@ -534,7 +525,7 @@ class ProQuizzApp:
         
         self.mostrar_puntajes() 
 
-# ... (Funciones de administración, puntajes y bucle principal)
+# (Funciones de administración, puntajes y bucle principal)
 
     def mostrar_panel_administracion(self):
         self.limpiar_frame()
@@ -840,7 +831,6 @@ class ProQuizzApp:
 
 
 # Bucle Principal de Tkinter
-
 
 if __name__ == "__main__":
     root = Tk()
